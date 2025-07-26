@@ -1,0 +1,9 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/temporal-ring-441415-v7/test/image-1:latest', '.']
+images:
+- 'us-central1-docker.pkg.dev/temporal-ring-441415-v7/test/image-1:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY
+timeout: 600s
+serviceAccount: hello-787@temporal-ring-441415-v7.iam.gserviceaccount.com
