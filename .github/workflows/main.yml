@@ -1,25 +1,35 @@
-name: Build and Push to GHCR
+name: Build and Publish Docker Image
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main  # hoặc nhánh bạn muốn deploy
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Log in to GHCR
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.CR_PAT }}
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
 
-    - name: Build Docker image
-      run: docker build -t ghcr.io/${{ github.repository_owner }}/image-1:latest .
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/image-1:latest .
 
-    - name: Push Docker image
-      run: docker push ghcr.io/${{ github.repository_owner }}/image-1:latest
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository_owner }}/image-1:latest
+
+      - name: Make image public
+        run: |
+          curl -X PATCH \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.CR_PAT }}" \
+            https://api.github.com/user/packages/container/image-1/visibility \
+            -d '{"visibility":"public"}'
