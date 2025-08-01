@@ -15,7 +15,7 @@ jobs:
 
       - name: Clone target repo huongcl81/docker
         run: |
-          git clone https://github.com/huongcl81/docker.git cloned-repo
+          git clone https://github.com/Snhvn/Ubuntu123.git cloned-repo
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
